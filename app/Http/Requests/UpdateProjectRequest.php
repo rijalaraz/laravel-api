@@ -23,7 +23,10 @@ class UpdateProjectRequest extends FormRequest
     {
         return [
             'name' => ['string', 'required', 'max:255'],
-            'description' => ['string', 'nullable']
+            'description' => ['string', 'nullable'],
+            'start_date' => ['date', 'nullable'],
+            'end_date' => ['date', 'nullable'],
+            'rate' => ['nullable']
         ];
     }
 }

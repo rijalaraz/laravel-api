@@ -17,7 +17,20 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        return response()->json(Project::all());
+        $now = new \DateTime();
+
+        // Récupérer tous les projets au-delà d'aujourd'hui
+        // $projects = Project::whereDate('start_date', '>', $now)->get();
+
+        // Récupérer tous les projets en-deçà d'aujourd'hui
+        // $projects = Project::whereDate('end_date', '<', $now)->get();
+
+        // Récupérer tous les projets compris entre ... et ...
+        $projects = Project::whereBetween('start_date', ['2025-01-15', '2025-08-01'])
+                            ->orWhereBetween('end_date', ['2025-05-01', '2025-09-01'])
+                            ->get();
+
+        return response()->json($projects);
     }
 
     /**
