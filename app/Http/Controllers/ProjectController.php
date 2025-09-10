@@ -7,6 +7,7 @@ use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
@@ -85,4 +86,14 @@ class ProjectController extends Controller
             'message' => 'Projet supprimé avec succès'
         ]);
     }
+
+    public function search(Request $request)
+    {
+        $keyword = $request->input('keyword');
+
+        $projects = Project::where('name', 'like', value: "%$keyword%")->get();
+
+        return response()->json($projects);
+    }
+
 }
