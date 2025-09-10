@@ -35,9 +35,14 @@ class ProjectController extends Controller
 
         // $projects = Project::orderBy('created_at', 'ASC')->get();
 
-        $projects = Project::orderBy('rate', 'DESC')
-                            ->orderBy('start_date', 'DESC')
-                            ->get();
+        // $projects = Project::orderBy('rate', 'DESC')
+        //                     ->orderBy('start_date', 'DESC')
+        //                     ->get();
+
+//-------------------------------------------------------------------------------------------------------------
+
+        // Pagination
+        $projects = Project::paginate(2);
 
         return response()->json($projects);
     }
