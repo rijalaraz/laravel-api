@@ -9,9 +9,9 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::apiResource('/project', ProjectController::class);
+Route::apiResource('/project', ProjectController::class)->middleware('auth:sanctum');
 
-Route::post('/project/search', [ProjectController::class, 'search']);
+Route::post('/project/search', [ProjectController::class, 'search'])->middleware('auth:sanctum');
 
 // Authentification
 Route::post('/register', [AuthController::class, 'register']);
