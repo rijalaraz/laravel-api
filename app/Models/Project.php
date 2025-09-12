@@ -11,6 +11,13 @@ class Project extends Model
         'description',
         'start_date',
         'end_date',
-        'rate'
+        'rate',
+
+        'user_id'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 }

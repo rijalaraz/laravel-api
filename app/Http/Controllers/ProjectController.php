@@ -6,6 +6,7 @@ use App\Models\Project;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Traits\ApiResponseTrait;
+use Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -33,6 +34,7 @@ class ProjectController extends Controller
         //                     ->get();
 //-------------------------------------------------------------------------------------------------------------
 
+        // Trier les projets
         // $projects = Project::orderBy('created_at', 'ASC')->get();
 
         // $projects = Project::orderBy('rate', 'DESC')
@@ -42,7 +44,12 @@ class ProjectController extends Controller
 //-------------------------------------------------------------------------------------------------------------
 
         // Pagination
-        $projects = Project::paginate(2);
+        // $projects = Project::paginate(2);
+
+//-------------------------------------------------------------------------------------------------------------
+
+        // En fonction de l'utilisateur actuellement connecté
+        $projects = Project::where('user_id', Auth::user()->id)->get();
 
         return response()->json($projects);
     }
@@ -54,7 +61,14 @@ class ProjectController extends Controller
     {
         $request->validated($request->all());
 
-        $project = Project::create($request->all());
+        $project = Project::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'rate' => $request->rate,
+            'user_id' => Auth::user()->id
+        ]);
 
         return $this->successResponse($project, 'Projet créé avec succès');
     }
