@@ -9,6 +9,7 @@ use App\Traits\ApiResponseTrait;
 use Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class ProjectController extends Controller
 {
@@ -78,6 +79,14 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
+        // if (!Gate::allows('access', $project)) {
+        //     return $this->unauthorizedResponse("Vous n'êtes pas autorisé à accéder");
+        // }
+
+        if (Auth::user()->cannot('view', $project)) {
+            return $this->unauthorizedResponse("Vous n'êtes pas autorisé à accéder");
+        }
+
         return response()->json($project);
     }
 
@@ -86,6 +95,14 @@ class ProjectController extends Controller
      */
     public function update(UpdateProjectRequest $request, Project $project)
     {
+        // if (!Gate::allows('access', $project)) {
+        //     return $this->unauthorizedResponse("Vous n'êtes pas autorisé à accéder");
+        // }
+
+        if (Auth::user()->cannot('update', $project)) {
+            return $this->unauthorizedResponse("Vous n'êtes pas autorisé à accéder");
+        }
+
         $request->validated($request->all());
 
         $project->update($request->all());
@@ -98,6 +115,14 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
+        // if (!Gate::allows('access', $project)) {
+        //     return $this->unauthorizedResponse("Vous n'êtes pas autorisé à accéder");
+        // }
+
+        if (Auth::user()->cannot('delete', $project)) {
+            return $this->unauthorizedResponse("Vous n'êtes pas autorisé à accéder");
+        }
+
         $project->delete();
 
         return response()->json([

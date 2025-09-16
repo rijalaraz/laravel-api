@@ -22,4 +22,8 @@ trait ApiResponseTrait
             'message' => $message
         ], $code);
     }
+
+    protected function unauthorizedResponse($message = null) {
+        return $this->errorResponse($message, Response::HTTP_UNAUTHORIZED);
+    }
 }
