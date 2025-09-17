@@ -10,6 +10,7 @@ use Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
 {
@@ -62,13 +63,20 @@ class ProjectController extends Controller
     {
         $request->validated($request->all());
 
+        $file = $request->file('image');
+
+        $name = $file->hashName(); // nom_photo.jpg
+
+        $path = $file->storeAs('images', $name, 'public');
+
         $project = Project::create([
             'name' => $request->name,
             'description' => $request->description,
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
             'rate' => $request->rate,
-            'user_id' => Auth::user()->id
+            'user_id' => Auth::user()->id,
+            'image' => $path
         ]);
 
         return $this->successResponse($project, 'Projet créé avec succès');

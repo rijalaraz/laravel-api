@@ -26,7 +26,8 @@ class StoreProjectRequest extends FormRequest
             'description' => ['string', 'nullable'],
             'start_date' => ['date', 'nullable'],
             'end_date' => ['date', 'nullable'],
-            'rate' => ['nullable']
+            'rate' => ['nullable'],
+            'image' => ['image', 'nullable', 'mimes:png,jpg,jpeg', 'max:2048']
         ];
     }
 }

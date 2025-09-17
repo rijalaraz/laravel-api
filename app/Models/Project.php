@@ -15,6 +15,7 @@ class Project extends Model
         'start_date',
         'end_date',
         'rate',
+        'image',
 
         'user_id'
     ];
