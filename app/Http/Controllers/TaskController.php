@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\TaskResource;
 use App\Models\Project;
 use App\Models\Task;
 use App\Http\Requests\StoreTaskRequest;
@@ -17,7 +18,7 @@ class TaskController extends Controller
      */
     public function index(Project $project)
     {
-        return response()->json($project->tasks);
+        return TaskResource::collection($project->tasks);
     }
 
     /**
@@ -43,7 +44,7 @@ class TaskController extends Controller
             return $this->errorResponse("Cette tâche n'appartient pas à ce projet");
         }
 
-        return response()->json($task);
+        return new TaskResource($task);
     }
 
     /**

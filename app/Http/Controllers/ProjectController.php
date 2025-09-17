@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ProjectResource;
 use App\Models\Project;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
@@ -53,7 +54,7 @@ class ProjectController extends Controller
         // En fonction de l'utilisateur actuellement connecté
         $projects = Project::where('user_id', Auth::user()->id)->get();
 
-        return response()->json($projects);
+        return ProjectResource::collection($projects);
     }
 
     /**
@@ -95,7 +96,7 @@ class ProjectController extends Controller
             return $this->unauthorizedResponse("Vous n'êtes pas autorisé à accéder");
         }
 
-        return response()->json($project);
+        return new ProjectResource($project);
     }
 
     /**
@@ -145,7 +146,7 @@ class ProjectController extends Controller
 
         $projects = Project::where('name', 'like', value: "%$keyword%")->get();
 
-        return response()->json($projects);
+        return ProjectResource::collection($projects);
     }
 
 }
