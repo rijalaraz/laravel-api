@@ -19,6 +19,26 @@ class ProjectController extends Controller
 
     /**
      * Display a listing of the resource.
+     * 
+     * @OA\Get(
+     *      path="/api/project",
+     *      summary="Liste tous les projets",
+     *      operationId="getprojects",
+     *      tags={"Projects"},
+     *      @OA\Parameter(
+     *         name="Accept",
+     *         in="header",
+     *         @OA\Schema(type="string", example="application/vnd.api+json")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Liste des projets",
+     *          @OA\Schema(
+     *              type="array",
+     *              @OA\Items(ref="#/definitions/Item")
+     *          )
+     *      )
+     * )
      */
     public function index()
     {
@@ -59,6 +79,63 @@ class ProjectController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * @OA\Post(
+     *     path="/api/project",
+     *     summary="Enregistrer un nouveau projet",
+     *     tags={"Projects"},
+     *     @OA\Parameter(
+     *         name="Accept",
+     *         in="header",
+     *         @OA\Schema(type="string", example="application/vnd.api+json")
+     *     ),
+     *     @OA\Parameter(
+     *         name="name",
+     *         in="query",
+     *         description="Le nom du projet",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="description",
+     *         in="query",
+     *         description="La description du projet",
+     *         required=false,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="start_date",
+     *         in="query",
+     *         description="La date de debut du projet",
+     *         required=false,
+     *         @OA\Schema(type="date")
+     *     ),
+     *     @OA\Parameter(
+     *         name="end_date",
+     *         in="query",
+     *         description="La date de fin du projet",
+     *         required=false,
+     *         @OA\Schema(type="date")
+     *     ),
+     *     @OA\Parameter(
+     *         name="rate",
+     *         in="query",
+     *         description="La note du projet",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Photo du projet",
+     *         @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *              @OA\Schema(
+     *                  type="object",
+     *                  @OA\Property(property="image", type="string", format="binary")
+     *              )
+     *         )
+     *     ),
+     *     @OA\Response(response="201", description="Projet enregistre avec succes"),
+     *     @OA\Response(response="422", description="Validation errors")
+     * )
      */
     public function store(StoreProjectRequest $request)
     {
