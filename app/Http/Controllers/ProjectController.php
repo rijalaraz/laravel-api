@@ -141,11 +141,14 @@ class ProjectController extends Controller
     {
         $request->validated($request->all());
 
-        $file = $request->file('image');
+        $path = '';
+        if (!empty($request->file('image'))) {
+            $file = $request->file('image');
 
-        $name = $file->hashName(); // nom_photo.jpg
+            $name = $file->hashName(); // nom_photo.jpg
 
-        $path = $file->storeAs('images', $name, 'public');
+            $path = $file->storeAs('images', $name, 'public');            
+        }
 
         $project = Project::create([
             'name' => $request->name,
