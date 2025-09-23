@@ -6,9 +6,6 @@ use App\Http\Controllers\TaskController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
 
 // Authentification PUblic
 Route::post('/register', [AuthController::class, 'register']);
@@ -22,9 +19,13 @@ Route::group([
 
 ], function($router) {
 
+    Route::get('/user', [AuthController::class, 'me']);
+
     Route::apiResource('/project', ProjectController::class);
     Route::post('/project/search', [ProjectController::class, 'search']);
     Route::apiResource('project.task', TaskController::class);
+
+    Route::post('/logout', [AuthController::class, 'logout']);
 
 });
 

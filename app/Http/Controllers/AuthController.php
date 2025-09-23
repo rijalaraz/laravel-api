@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -177,7 +178,7 @@ class AuthController extends Controller
                 return $this->errorResponse('Email ou mot de passe incorrect');
             }
         } catch (JWTException $e) {
-            return $this->errorResponse('Could not create token', 500);
+            return $this->errorResponse('Could not create token', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return $this->successResponse([
@@ -205,7 +206,11 @@ class AuthController extends Controller
      */
     public function logout()
     {
-        Auth::logout();
+        try {
+            JWTAuth::invalidate(JWTAuth::getToken());
+        } catch (JWTException $e) {
+            return $this->errorResponse('Failed to logout, please try again', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
 
         return $this->successResponse([], 'Successfully logged out');
     }
