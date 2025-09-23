@@ -14,8 +14,18 @@ Route::get('/user', function (Request $request) {
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+
 // Privé
-Route::apiResource('/project', ProjectController::class)->middleware('auth:sanctum');
-Route::post('/project/search', [ProjectController::class, 'search'])->middleware('auth:sanctum');
-Route::apiResource('project.task', TaskController::class)->middleware('auth:sanctum');
+Route::group([
+
+    'middleware' => 'auth:api',
+
+], function($router) {
+
+    Route::apiResource('/project', ProjectController::class);
+    Route::post('/project/search', [ProjectController::class, 'search']);
+    Route::apiResource('project.task', TaskController::class);
+
+});
+
 

@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -17,7 +19,7 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:5'
+            'password' => 'required|string|min:6|confirmed'
         ]);
 
         $user = User::create([
@@ -26,11 +28,17 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        try {
+            $token = JWTAuth::fromUser($user);
+        } catch (JWTException $e) {
+            return $this->errorResponse('Could not create token', 500);
+        }
 
         return $this->successResponse([
-            'user' => $user,
-            'token' => $token
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => JWTAuth::factory()->getTTL() * 60,
+            'user' => $user
         ], 'Inscription effectuée avec succès');
     }
 
@@ -162,22 +170,54 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
+        $credentials = $request->only('email', 'password');
 
-        $user = User::where('email', '=', $request->email)->with('projects')->first();
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return $this->errorResponse('Email ou mot de passe incorrect');
+        try {
+            if (!$token = JWTAuth::attempt($credentials)) {
+                return $this->errorResponse('Email ou mot de passe incorrect');
+            }
+        } catch (JWTException $e) {
+            return $this->errorResponse('Could not create token', 500);
         }
 
-        $token = $user->createToken('auth_token')->plainTextToken;
-
         return $this->successResponse([
-            'token' => $token,
-            'user' => new UserResource($user)
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => JWTAuth::factory()->getTTL() * 60,
+            'user' => Auth::user()
         ], 'Authentification réussie');
     }
+
+    /**
+     * Get the authenticated User.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function me()
+    {
+        return response()->json(Auth::user());
+    }
+
+    /**
+     * Log the user out (Invalidate the token).
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function logout()
+    {
+        Auth::logout();
+
+        return $this->successResponse([], 'Successfully logged out');
+    }
+
+    /**
+     * Refresh a token.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function refresh()
+    {
+        return $this->respondWithToken(JWTAuth::refresh());
+    }
+
 }
