@@ -22,7 +22,7 @@ class ProjectResource extends JsonResource
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
             'rate' => $this->rate,
-            'image' => $this->image ? URL::to($this->image) : null,
+            'image' => $this->image ? URL::to('storage/'.$this->image) : null,
             'user' => new UserResource($this->user),
             'tasks' => TaskResource::collection($this->tasks)
         ];

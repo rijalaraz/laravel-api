@@ -147,7 +147,7 @@ class ProjectController extends Controller
 
             $name = $file->hashName(); // nom_photo.jpg
 
-            $path = $file->storeAs('images', $name, 'public');            
+            $path = $file->storeAs('images/projects', $name, 'public');
         }
 
         $project = Project::create([
