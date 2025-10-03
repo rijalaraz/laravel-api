@@ -24,6 +24,59 @@ class AuthController extends Controller
         ];
     }
 
+    /**
+     * Store a newly created user in storage.
+     * @OA\Post(
+     *     path="/api/register",
+     *     summary="Enregistrer un nouvel utilisateur",
+     *     description="Enregistrer un nouvel utilisateur",
+     *     tags={"Authentification"},
+     *     @OA\Parameter(
+     *         name="name",
+     *         in="query",
+     *         description="Le nom de l'utilisateur",
+     *         required=true,
+     *         @OA\Schema(
+     *              type="string",
+     *              example="John Doe"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="email",
+     *         in="query",
+     *         description="L'email de l'utilisateur",
+     *         required=true,
+     *         @OA\Schema(
+     *              type="string",
+     *              example="john@gmail.com"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="password",
+     *         in="query",
+     *         description="Mot de passe",
+     *         required=true,
+     *         @OA\Schema(
+     *              type="string",
+     *              format="password",
+     *              example="123456"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="password_confirmation",
+     *         in="query",
+     *         description="Confirmation du mot de passe",
+     *         required=true,
+     *         @OA\Schema(
+     *              type="string",
+     *              format="password",
+     *              example="123456"
+     *         )
+     *     ),
+     *     @OA\Response(response="201", description="Projet enregistre avec succes"),
+     *     @OA\Response(response="422", description="Validation errors")
+     * )
+     */
     public function register(Request $request)
     {
         $request->validate([
@@ -80,7 +133,7 @@ class AuthController extends Controller
      *     in="query",
      *     @OA\Schema(
      *          type="string",
-     *          example="12345"
+     *          example="123456"
      *     ),
      *     description="Le mot de passe de connexion",
      *   ),
