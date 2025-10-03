@@ -73,7 +73,7 @@ class AuthController extends Controller
      *              example="123456"
      *         )
      *     ),
-     *     @OA\Response(response="201", description="Projet enregistre avec succes"),
+     *     @OA\Response(response="201", description="Utilisateur enregistré avec succes"),
      *     @OA\Response(response="422", description="Validation errors")
      * )
      */

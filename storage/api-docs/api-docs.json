@@ -59,7 +59,7 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "Projet enregistre avec succes"
+                        "description": "Utilisateur enregistré avec succes"
                     },
                     "422": {
                         "description": "Validation errors"
