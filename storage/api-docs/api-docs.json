@@ -42,7 +42,7 @@
                         "schema": {
                             "type": "string",
                             "format": "password",
-                            "example": "123456"
+                            "example": "Mija6!"
                         }
                     },
                     {
@@ -53,7 +53,7 @@
                         "schema": {
                             "type": "string",
                             "format": "password",
-                            "example": "123456"
+                            "example": "Mija6!"
                         }
                     }
                 ],

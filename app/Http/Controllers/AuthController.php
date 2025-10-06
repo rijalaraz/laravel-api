@@ -2,20 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Registered;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Traits\ApiResponseTrait;
+use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
-    use ApiResponseTrait;
+    use ApiResponseTrait, RegistersUsers;
 
     public static function middleware()
     {
@@ -59,7 +65,7 @@ class AuthController extends Controller
      *         @OA\Schema(
      *              type="string",
      *              format="password",
-     *              example="123456"
+     *              example="Mija6!"
      *         )
      *     ),
      *     @OA\Parameter(
@@ -70,7 +76,7 @@ class AuthController extends Controller
      *         @OA\Schema(
      *              type="string",
      *              format="password",
-     *              example="123456"
+     *              example="Mija6!"
      *         )
      *     ),
      *     @OA\Response(response="201", description="Utilisateur enregistré avec succes"),
@@ -79,18 +85,71 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed'
-        ]);
+        $validator = $this->validator($request->all());
 
+        if($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        event(new Registered($user = $this->create($request->all())));
+
+        $this->guard()->login($user);
+
+        if ($response = $this->registered($request, $user)) {
+            return $response;
+        }
+
+        return $request->wantsJson()
+                    ? new JsonResponse([], 201)
+                    : redirect($this->redirectPath());
+    }
+
+    /**
+     * Get a validator for an incoming registration request.
+     *
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function validator(array $data)
+    {
+        $uniqueEmailRule = Rule::unique('users', 'email');
+        return Validator::make($data, [
+            'email' => ['required', 'email:rfc,dns', 'max:255', $uniqueEmailRule],
+            'password' => 'required|min:6|pwned|confirmed|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/', // at-least 1 Uppercase, 1 Lowercase, 1 Numeric and 1 special character
+            'password_confirmation' => 'required|min:6',
+            'name' => 'required|max:255',
+        ]);
+    }
+
+    /**
+     * Create user.
+     *
+     * @param  array  $data
+     * @return User   $user
+     */
+    protected function create(array $data)
+    {
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'remember_token' => Hash::make(Str::random(10)),
         ]);
 
+        return $user;
+    }
+
+     /**
+     * The user has been registered.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
+     */
+    protected function registered(Request $request, $user)
+    {
         try {
             $token = JWTAuth::fromUser($user);
         } catch (JWTException $e) {
