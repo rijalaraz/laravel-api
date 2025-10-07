@@ -5,68 +5,6 @@
         "version": "1.0.0"
     },
     "paths": {
-        "/api/register": {
-            "post": {
-                "tags": [
-                    "Authentification"
-                ],
-                "summary": "Enregistrer un nouvel utilisateur",
-                "description": "Enregistrer un nouvel utilisateur",
-                "operationId": "8a56853624e025573120a09a4c75d468",
-                "parameters": [
-                    {
-                        "name": "name",
-                        "in": "query",
-                        "description": "Le nom de l'utilisateur",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "example": "John Doe"
-                        }
-                    },
-                    {
-                        "name": "email",
-                        "in": "query",
-                        "description": "L'email de l'utilisateur",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "example": "john@gmail.com"
-                        }
-                    },
-                    {
-                        "name": "password",
-                        "in": "query",
-                        "description": "Mot de passe",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "password",
-                            "example": "Mija6!"
-                        }
-                    },
-                    {
-                        "name": "password_confirmation",
-                        "in": "query",
-                        "description": "Confirmation du mot de passe",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "password",
-                            "example": "Mija6!"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Utilisateur enregistré avec succes"
-                    },
-                    "422": {
-                        "description": "Validation errors"
-                    }
-                }
-            }
-        },
         "/api/login": {
             "post": {
                 "tags": [
@@ -174,6 +112,376 @@
                                                     "items": {
                                                         "type": "string",
                                                         "example": "Vous devez d'abord vérifier votre adresse e-mail."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Inscription"
+                ],
+                "summary": "Enregistrer un nouvel utilisateur",
+                "description": "Enregistrer un nouvel utilisateur",
+                "operationId": "registerUser",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Le nom de l'utilisateur",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "John Doe"
+                        }
+                    },
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "L'email de l'utilisateur",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "john@gmail.com"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "Mot de passe",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "password",
+                            "example": "Mija6!"
+                        }
+                    },
+                    {
+                        "name": "password_confirmation",
+                        "in": "query",
+                        "description": "Confirmation du mot de passe",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "password",
+                            "example": "Mija6!"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Utilisateur enregistré avec succes"
+                    },
+                    "422": {
+                        "description": "Validation errors"
+                    }
+                }
+            }
+        },
+        "/api/email/verify/{user}": {
+            "get": {
+                "tags": [
+                    "Inscription"
+                ],
+                "summary": "Vérification de l'adresse email d'un utilisateur inscrit",
+                "description": "Vérification de l'adresse email d'un utilisateur inscrit",
+                "operationId": "verifyEmailAddress",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "description": "Id de l'utilisateur",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 34
+                        }
+                    },
+                    {
+                        "name": "expires",
+                        "in": "query",
+                        "description": "Date d'expiration",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "1619635176"
+                        }
+                    },
+                    {
+                        "name": "signature",
+                        "in": "query",
+                        "description": "Signature",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "a0dbd2d1bb02980b25881132262dae0ae9780d9c51a2c7fe79359badeb0dd508"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Vérification réussie",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Message de réussite de la vérification",
+                                            "type": "string",
+                                            "example": "Votre adresse email est vérifiée."
+                                        },
+                                        "user": {
+                                            "description": "Détails de l'utilisateur",
+                                            "properties": {
+                                                "id": {
+                                                    "description": "ID",
+                                                    "type": "integer",
+                                                    "example": 20
+                                                },
+                                                "name": {
+                                                    "description": "Nom d'usager",
+                                                    "type": "string",
+                                                    "example": null
+                                                },
+                                                "firstname": {
+                                                    "description": "Prénom(s)",
+                                                    "type": "string",
+                                                    "example": null
+                                                },
+                                                "lastname": {
+                                                    "description": "Nom",
+                                                    "type": "string",
+                                                    "example": null
+                                                },
+                                                "email": {
+                                                    "description": "Email",
+                                                    "type": "string",
+                                                    "example": "mathieu.roy@strategemedia.com"
+                                                },
+                                                "company": {
+                                                    "description": "Compagnie",
+                                                    "type": "string",
+                                                    "example": "Alu-Rex"
+                                                },
+                                                "mobilephone": {
+                                                    "description": "Cellulaire",
+                                                    "type": "string",
+                                                    "example": null
+                                                },
+                                                "phone": {
+                                                    "description": "Téléphone",
+                                                    "type": "string",
+                                                    "example": null
+                                                },
+                                                "email_verified_at": {
+                                                    "description": "Date de vérification de l'email",
+                                                    "type": "string",
+                                                    "example": "2021-04-28T21:28:53.000000Z"
+                                                },
+                                                "created_at": {
+                                                    "description": "Date de création",
+                                                    "type": "string",
+                                                    "example": "2021-04-28T21:21:35.000000Z"
+                                                },
+                                                "updated_at": {
+                                                    "description": "Date de mis à jour",
+                                                    "type": "string",
+                                                    "example": "2021-04-28T21:28:53.000000Z"
+                                                },
+                                                "deleted_at": {
+                                                    "description": "Date de suppression",
+                                                    "type": "string",
+                                                    "example": null
+                                                },
+                                                "stripe_id": {
+                                                    "description": "Identifiant Client de Stripe",
+                                                    "type": "string",
+                                                    "example": "cus_JTGwkBQuLY8Nqy"
+                                                },
+                                                "card_brand": {
+                                                    "description": "Type de carte de paiement",
+                                                    "type": "string",
+                                                    "example": "mastercard"
+                                                },
+                                                "card_last_four": {
+                                                    "description": "Les 4 derniers chiffres de la carte",
+                                                    "type": "string",
+                                                    "example": "4444"
+                                                },
+                                                "trial_ends_at": {
+                                                    "description": "Date de fin de l'essai",
+                                                    "type": "string",
+                                                    "example": null
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Vérification échouée",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Message d'échec de vérification",
+                                            "type": "string",
+                                            "example": "La vérification de votre adresse email a échouée."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Adresse email déjà vérifiée",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Vérification déjà faite",
+                                            "type": "string",
+                                            "example": "Votre adresse email a déjà été vérifiée."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/email/resend": {
+            "post": {
+                "tags": [
+                    "Inscription"
+                ],
+                "summary": "Renvoi du courriel de vérification de l'adresse email d'un utilisateur inscrit",
+                "description": "Renvoi du courriel de vérification de l'adresse email d'un utilisateur inscrit",
+                "operationId": "resendEmailVerification",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "Adresse de courriel",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Renvoi de courriel réussi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Message de confirmation d'envoi d'email",
+                                            "type": "string",
+                                            "example": "Un courriel de vérification d'adresse email vous a été envoyé."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "208": {
+                        "description": "Adresse de courriel déjà vérifiée",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Données invalides",
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "email": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "Votre adresse email a déjà été vérifiée."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Adresse de courriel invalide",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Données invalides",
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "email": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "Le champ adresse email doit être une adresse email valide."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Utilisateur inexistant",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Données invalides",
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "email": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "Aucun utilisateur n'a été trouvé avec cette adresse email."
                                                     }
                                                 }
                                             },
@@ -307,6 +615,10 @@
         {
             "name": "Authentification",
             "description": "Authentification"
+        },
+        {
+            "name": "Inscription",
+            "description": "Inscription"
         },
         {
             "name": "Projects",

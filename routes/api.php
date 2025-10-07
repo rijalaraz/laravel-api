@@ -1,15 +1,26 @@
 <?php
 
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
 // Authentification PUblic
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+Route::group([
+
+    'namespace' => 'App\Http\Controllers\Auth',
+    'middleware' => 'guest:api'
+
+], function() {
+
+    Route::post('/register', RegisterController::class);
+    Route::get('email/verify/{user}', [VerificationController::class, 'verify'])->name('verification.verify');
+    Route::post('email/resend', [VerificationController::class, 'resend'])->name('verification.resend');
+
+});
 
 
 // Privé
@@ -19,13 +30,13 @@ Route::group([
 
 ], function($router) {
 
-    Route::get('/user', [AuthController::class, 'me']);
+    Route::get('/user', [LoginController::class, 'me']);
 
     Route::apiResource('/project', ProjectController::class);
     Route::post('/project/search', [ProjectController::class, 'search']);
     Route::apiResource('project.task', TaskController::class);
 
-    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/logout', [LoginController::class, 'logout']);
 
 });
 
