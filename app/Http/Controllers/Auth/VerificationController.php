@@ -222,15 +222,11 @@ class VerificationController extends Controller
     public function verify(Request $request, User $user)
     {
         if (!URL::hasValidSignature($request)) {
-            return response()->json([
-                'message' => trans('verification.invalid'),
-            ], Response::HTTP_BAD_REQUEST);
+            return $this->errorResponse(trans('verification.invalid'));
         }
 
         if ($user->hasVerifiedEmail()) {
-            return response()->json([
-                'message' => trans('verification.already_verified'),
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return $this->errorResponse(trans('verification.already_verified'), Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $user->markEmailAsVerified();
@@ -239,7 +235,11 @@ class VerificationController extends Controller
 
         event(new Verified($user));
 
-        return redirect(url(config('app.url')));
+        return $this->successResponse([
+            'email' => $user->getEmailForVerification()
+        ],trans('verification.verified'));
+
+        // return redirect(url(config('app.url')));
     }
 
     /**
@@ -377,15 +377,11 @@ class VerificationController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (is_null($user)) {
-            throw ValidationException::withMessages([
-                'message' => [trans('verification.user')],
-            ])->status(Response::HTTP_BAD_REQUEST);
+            return $this->errorResponse(trans('verification.user'));
         }
 
         if ($user->hasVerifiedEmail()) {
-            throw ValidationException::withMessages([
-                'message' => [trans('verification.already_verified')],
-            ])->status(Response::HTTP_ALREADY_REPORTED);
+            return $this->errorResponse(trans('verification.already_verified'), Response::HTTP_ALREADY_REPORTED);
         }
 
         $user->sendEmailVerificationNotification();
