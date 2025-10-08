@@ -20,6 +20,8 @@ Route::group([
     Route::get('email/verify/{user}', [VerificationController::class, 'verify'])->name('verification.verify');
     Route::post('email/resend', [VerificationController::class, 'resend'])->name('verification.resend');
 
+    Route::post('/login', [LoginController::class, 'login']);
+
 });
 
 

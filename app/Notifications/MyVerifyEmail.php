@@ -72,10 +72,10 @@ class MyVerifyEmail extends VerifyEmail
      *
      * @return array<string, mixed>
      */
-    public function toArray(object $notifiable): array
+    public function toArray(object $notifiable)
     {
         return [
-            //
+            'verification_url' => $this->verificationUrl($notifiable)
         ];
     }
 }

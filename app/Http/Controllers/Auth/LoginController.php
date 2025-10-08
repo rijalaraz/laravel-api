@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Exceptions\VerifyEmailException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Traits\ApiResponseTrait;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -52,9 +55,20 @@ class LoginController extends Controller
      *     in="query",
      *     @OA\Schema(
      *          type="string",
-     *          example="123456"
+     *          format="password",
+     *          example="Mija6!"
      *     ),
      *     description="Le mot de passe de connexion",
+     *   ),
+     *   @OA\Parameter(
+     *     name="remember",
+     *     required=true,
+     *     in="query",
+     *     @OA\Schema(
+     *          type="boolean",
+     *          default="true"
+     *     ),
+     *     description="Se souvenir de moi",
      *   ),
      *   @OA\Response(
      *     response=200,
@@ -150,17 +164,89 @@ class LoginController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function __invoke(Request $request)
+    public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $this->validateLogin($request);
 
-        try {
-            if (!$token = JWTAuth::attempt($credentials)) {
-                return $this->errorResponse('Email ou mot de passe incorrect');
-            }
-        } catch (JWTException $e) {
-            return $this->errorResponse('Could not create token', Response::HTTP_INTERNAL_SERVER_ERROR);
+        // If the class is using the ThrottlesLogins trait, we can automatically throttle
+        // the login attempts for this application. We'll key this by the username and
+        // the IP address of the client making these requests into this application.
+        if (method_exists($this, 'hasTooManyLoginAttempts') &&
+            $this->hasTooManyLoginAttempts($request)) {
+            $this->fireLockoutEvent($request);
+
+            return $this->sendLockoutResponse($request);
         }
+
+        if ($this->attemptLogin($request)) {
+            if ($request->hasSession()) {
+                $request->session()->put('auth.password_confirmed_at', time());
+            }
+
+            $user = $this->guard()->user();
+            if ($user instanceof MustVerifyEmail && ! $user->hasVerifiedEmail()) {
+                return $this->errorResponse(trans('verification.mustverify', [
+                    'linkOpen' => '<a href="/email/resend?email='.urlencode($user->email).'">',
+                    'linkClose' => '</a>',
+                ]), Response::HTTP_UNAUTHORIZED);
+            }
+
+            return $this->sendLoginResponse($request);
+        }
+
+        // If the login attempt was unsuccessful we will increment the number of attempts
+        // to login and redirect the user back to the login form. Of course, when this
+        // user surpasses their maximum number of attempts they will get locked out.
+        $this->incrementLoginAttempts($request);
+
+        return $this->sendFailedLoginResponse($request);
+    }
+
+    /**
+     * Get the failed login response instance.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    protected function sendFailedLoginResponse(Request $request)
+    {
+        return $this->errorResponse(trans('auth.failed'));
+    }
+
+    /**
+     * Attempt to log the user into the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return bool
+     */
+    protected function attemptLogin(Request $request)
+    {
+        $token = $this->guard()->attempt($this->credentials($request), $request->boolean('remember'));
+
+        if (! $token) {
+            return false;
+        }
+
+        $this->guard()->setToken($token);
+
+        return true;
+    }
+
+    /**
+     * The user has been authenticated.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
+     */
+    protected function authenticated(Request $request, $user)
+    {
+        $token = (string) $this->guard()->getToken();
+        $expiration = $this->guard()->getPayload()->get('exp');
+
+        // $token = JWTAuth::attempt($credentials);
 
         return $this->successResponse([
             'access_token' => $token,

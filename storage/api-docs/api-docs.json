@@ -31,7 +31,18 @@
                         "required": true,
                         "schema": {
                             "type": "string",
-                            "example": "123456"
+                            "format": "password",
+                            "example": "Mija6!"
+                        }
+                    },
+                    {
+                        "name": "remember",
+                        "in": "query",
+                        "description": "Se souvenir de moi",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean",
+                            "default": "true"
                         }
                     }
                 ],

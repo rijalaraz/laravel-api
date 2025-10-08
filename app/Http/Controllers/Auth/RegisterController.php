@@ -162,6 +162,6 @@ class RegisterController extends Controller
             'token_type' => 'bearer',
             'expires_in' => JWTAuth::factory()->getTTL() * 60,
             'user' => new UserResource($user)
-        ], 'Inscription effectuée avec succès');
+        ], 'Inscription effectuée avec succès. '.trans('verification.sent'));
     }
 }
