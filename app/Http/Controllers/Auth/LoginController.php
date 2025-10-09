@@ -283,6 +283,19 @@ class LoginController extends Controller
 
     /**
      * Get the authenticated User.
+     * 
+     * @OA\Get(
+     *      path="/api/user",
+     *      tags={"Utilisateur"},
+     *      summary="Informations sur l'utilisateur",
+     *      description="Informations sur l'utilisateur",
+     *      operationId="userInfos",
+     *      @OA\Response(
+     *          response=200,
+     *          description="Infos user"
+     *      )
+     * )
+     * 
      * @return UserResource
      */
     public function me()
@@ -292,6 +305,18 @@ class LoginController extends Controller
 
     /**
      * Log the user out (Invalidate the token).
+     * 
+     * @OA\Post(
+     *      path="/api/logout",
+     *      tags={"Utilisateur"},
+     *      summary="Déconnexion de l'utilisateur",
+     *      description="Déconnexion de l'utilisateur",
+     *      operationId="userLogout",
+     *      @OA\Response(
+     *          response=200,
+     *          description="Logout user"
+     *      )
+     * )
      *
      * @return \Illuminate\Http\JsonResponse
      */

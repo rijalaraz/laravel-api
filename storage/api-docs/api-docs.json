@@ -227,6 +227,36 @@
                 }
             }
         },
+        "/api/user": {
+            "get": {
+                "tags": [
+                    "Utilisateur"
+                ],
+                "summary": "Informations sur l'utilisateur",
+                "description": "Informations sur l'utilisateur",
+                "operationId": "userInfos",
+                "responses": {
+                    "200": {
+                        "description": "Infos user"
+                    }
+                }
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Utilisateur"
+                ],
+                "summary": "Déconnexion de l'utilisateur",
+                "description": "Déconnexion de l'utilisateur",
+                "operationId": "userLogout",
+                "responses": {
+                    "200": {
+                        "description": "Logout user"
+                    }
+                }
+            }
+        },
         "/api/register": {
             "post": {
                 "tags": [
@@ -837,6 +867,10 @@
         {
             "name": "Authentification",
             "description": "Authentification"
+        },
+        {
+            "name": "Utilisateur",
+            "description": "Utilisateur"
         },
         {
             "name": "Inscription",
