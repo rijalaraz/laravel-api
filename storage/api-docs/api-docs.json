@@ -5,6 +5,96 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/api/password/email": {
+            "post": {
+                "tags": [
+                    "Mot de passe oublié"
+                ],
+                "summary": "Envoi du lien de réinitialisation du mot de passe",
+                "description": "Mot de passe oublié, email de réinitialisation",
+                "operationId": "sendResetLinkEmail",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "Adresse email",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Envoi d'email réussi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Message de confirmation d'envoi d'email",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object",
+                                    "example": {
+                                        "status": "Un courriel de réinitialisation vous a été envoyé à rijalaraz@gmail.com. <i>Il se pourrait qu'il soit dans votre dossier de courriels indésirables</i>."
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Utilisateur inexistant",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "email": {
+                                            "description": "Message d'échec d'envoi d'email",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object",
+                                    "example": {
+                                        "email": "Aucun utilisateur n'a été trouvé avec cette adresse email."
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Adresse email invalide",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Données invalides",
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "email": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "Le champ adresse email doit être une adresse email valide."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/login": {
             "post": {
                 "tags": [
@@ -32,7 +122,7 @@
                         "schema": {
                             "type": "string",
                             "format": "password",
-                            "example": "Mija6!"
+                            "example": "Mijakely8!"
                         }
                     },
                     {
@@ -174,7 +264,7 @@
                         "schema": {
                             "type": "string",
                             "format": "password",
-                            "example": "Mija6!"
+                            "example": "Mijakely8!"
                         }
                     },
                     {
@@ -185,7 +275,7 @@
                         "schema": {
                             "type": "string",
                             "format": "password",
-                            "example": "Mija6!"
+                            "example": "Mijakely8!"
                         }
                     }
                 ],
@@ -195,6 +285,123 @@
                     },
                     "422": {
                         "description": "Validation errors"
+                    }
+                }
+            }
+        },
+        "/api/password/reset": {
+            "post": {
+                "tags": [
+                    "Mot de passe oublié"
+                ],
+                "summary": "Réinitialisation du mot de passe",
+                "description": "Réinitialisation du mot de passe",
+                "operationId": "resetPassword",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "Adresse email",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "Nouveau mot de passe",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "password_confirmation",
+                        "in": "query",
+                        "description": "Confirmation du nouveau mot de passe",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "token",
+                        "in": "query",
+                        "description": "Jeton obtenu",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Réinitialisation réussie du mot de passe",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Message de réussite de réinitialisation",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object",
+                                    "example": {
+                                        "status": "Votre mot de passe a été réinitialisé !"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Jeton invalide",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "email": {
+                                            "description": "Message d'échec de réinitialisation",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object",
+                                    "example": {
+                                        "email": "Ce jeton de réinitialisation du mot de passe n'est pas valide."
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Confirmation du mot de passe erronée",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Données invalides",
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "password": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "Le champ de confirmation mot de passe ne correspond pas."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -623,6 +830,10 @@
         }
     },
     "tags": [
+        {
+            "name": "Mot de passe oublié",
+            "description": "Mot de passe oublié"
+        },
         {
             "name": "Authentification",
             "description": "Authentification"

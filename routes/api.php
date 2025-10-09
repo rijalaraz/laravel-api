@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
@@ -21,6 +23,9 @@ Route::group([
     Route::post('email/resend', [VerificationController::class, 'resend'])->name('verification.resend');
 
     Route::post('/login', [LoginController::class, 'login']);
+
+    Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail']);
+    Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.reset');
 
 });
 

@@ -57,7 +57,7 @@ class LoginController extends Controller
      *     @OA\Schema(
      *          type="string",
      *          format="password",
-     *          example="Mija6!"
+     *          example="Mijakely8!"
      *     ),
      *     description="Le mot de passe de connexion",
      *   ),

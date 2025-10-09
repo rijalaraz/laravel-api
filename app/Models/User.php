@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\MyResetPassword;
 use App\Notifications\MyVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -79,5 +80,16 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
     public function sendEmailVerificationNotification()
     {
         $this->notify(new MyVerifyEmail());
+    }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new MyResetPassword($token));
     }
 }

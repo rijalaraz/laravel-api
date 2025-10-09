@@ -1,5 +1,5 @@
 <x-mail::message>
-# Vérification de votre e-mail
+# Réinitialisation du mot de passe
 
 {{ $greeting }}
 
@@ -10,6 +10,8 @@
 </x-mail::button>
 
 {{ $line2 }}
+
+{{ $line3 }}
 
 {{ $salutation }}
 

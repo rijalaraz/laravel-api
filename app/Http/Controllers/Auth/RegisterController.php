@@ -66,7 +66,7 @@ class RegisterController extends Controller
      *         @OA\Schema(
      *              type="string",
      *              format="password",
-     *              example="Mija6!"
+     *              example="Mijakely8!"
      *         )
      *     ),
      *     @OA\Parameter(
@@ -77,7 +77,7 @@ class RegisterController extends Controller
      *         @OA\Schema(
      *              type="string",
      *              format="password",
-     *              example="Mija6!"
+     *              example="Mijakely8!"
      *         )
      *     ),
      *     @OA\Response(response="201", description="Utilisateur enregistré avec succes"),
