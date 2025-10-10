@@ -4,14 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ProjectResource;
 use App\Models\Project;
-use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Traits\ApiResponseTrait;
 use Auth;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 
 class ProjectController extends Controller
 {
@@ -137,9 +135,13 @@ class ProjectController extends Controller
      *     @OA\Response(response="422", description="Validation errors")
      * )
      */
-    public function store(StoreProjectRequest $request)
+    public function store(Request $request)
     {
-        $request->validated($request->all());
+        $validator = $this->validator($request->all());
+
+        if($validator->fails()) {
+            return $this->errorResponse($validator->errors(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
 
         $path = '';
         if (!empty($request->file('image'))) {
@@ -162,6 +164,26 @@ class ProjectController extends Controller
 
         return $this->successResponse($project, 'Projet créé avec succès');
     }
+
+
+    /**
+     * Get a validator for an incoming registration request.
+     *
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function validator(array $data)
+    {
+        return Validator::make($data, [
+            'name' => ['string', 'required', 'max:255'],
+            'description' => ['string', 'nullable'],
+            'start_date' => ['date', 'nullable'],
+            'end_date' => ['date', 'nullable'],
+            'rate' => ['nullable'],
+            'image' => ['image', 'nullable', 'mimes:png,jpg,jpeg', 'max:2048']
+        ]);
+    }
+
 
     /**
      * Display the specified resource.

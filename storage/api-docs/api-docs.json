@@ -642,7 +642,8 @@
                         "description": "Adresse de courriel",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "example": "john@gmail.com"
                         }
                     }
                 ],

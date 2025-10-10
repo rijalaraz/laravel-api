@@ -148,16 +148,16 @@ class RegisterController extends Controller
      */
     protected function registered(Request $request, $user)
     {
-        try {
-            $token = JWTAuth::fromUser($user);
-        } catch (JWTException $e) {
-            return $this->errorResponse('Could not create token', 500);
-        }
+        $token = (string) $this->guard()->getToken();
+        $expiration = $this->guard()->getPayload()->get('exp');
+
+        // $token = JWTAuth::fromUser($user);
 
         return $this->successResponse([
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => JWTAuth::factory()->getTTL() * 60,
+            'expiration_date' => $expiration,
             'user' => new UserResource($user)
         ], 'Inscription effectuée avec succès. '.trans('verification.sent'));
     }

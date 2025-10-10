@@ -247,7 +247,8 @@ class VerificationController extends Controller
      *     in="query",
      *     description="Adresse de courriel",
      *     @OA\Schema(
-     *         type="string"
+     *         type="string",
+     *         example="john@gmail.com"
      *     )
      *   ),
      *   @OA\Response(
