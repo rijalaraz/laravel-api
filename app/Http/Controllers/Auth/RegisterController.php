@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Traits\ApiResponseTrait;
@@ -11,6 +10,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -83,17 +83,13 @@ class RegisterController extends Controller
      *     @OA\Response(response="422", description="Validation errors")
      * )
      */
-    public function register(StoreUserRequest $request)
+    public function register(Request $request)
     {
-        $request->validated($request->all());
+        $validator = $this->validator($request->all());
 
-        // $validator = $this->validator($request->all());
-
-        // if($validator->fails()) {
-        //     return response()->json([
-        //         'errors' => $validator->errors()
-        //     ], Response::HTTP_UNPROCESSABLE_ENTITY);
-        // }
+        if($validator->fails()) {
+            return $this->errorResponse($validator->errors(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
 
         event(new Registered($user = $this->create($request->all())));
 
