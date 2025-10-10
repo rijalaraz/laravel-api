@@ -267,6 +267,16 @@
                 "operationId": "registerUser",
                 "parameters": [
                     {
+                        "name": "Accept",
+                        "in": "header",
+                        "description": "En-tête",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "application/vnd.api+json"
+                        }
+                    },
+                    {
                         "name": "name",
                         "in": "query",
                         "description": "Le nom de l'utilisateur",

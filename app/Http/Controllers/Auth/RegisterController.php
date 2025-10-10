@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Traits\ApiResponseTrait;
@@ -38,6 +39,13 @@ class RegisterController extends Controller
      *     description="Enregistrer un nouvel utilisateur",
      *     operationId="registerUser",
      *     tags={"Inscription"},
+     *     @OA\Parameter(
+     *         name="Accept",
+     *         in="header",
+     *         description="En-tête",
+     *         required=true,
+     *         @OA\Schema(type="string", example="application/vnd.api+json")
+     *     ),
      *     @OA\Parameter(
      *         name="name",
      *         in="query",
@@ -84,15 +92,17 @@ class RegisterController extends Controller
      *     @OA\Response(response="422", description="Validation errors")
      * )
      */
-    public function __invoke(Request $request)
+    public function __invoke(StoreUserRequest $request)
     {
-        $validator = $this->validator($request->all());
+        $request->validated($request->all());
 
-        if($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
+        // $validator = $this->validator($request->all());
+
+        // if($validator->fails()) {
+        //     return response()->json([
+        //         'errors' => $validator->errors()
+        //     ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        // }
 
         event(new Registered($user = $this->create($request->all())));
 
