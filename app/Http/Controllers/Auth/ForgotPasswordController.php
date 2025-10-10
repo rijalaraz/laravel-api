@@ -12,14 +12,7 @@ use Illuminate\Support\Facades\Password;
 class ForgotPasswordController extends Controller
 {
     use ApiResponseTrait, SendsPasswordResetEmails;
-
-    public static function middleware()
-    {
-        return [
-            new Middleware('guest:api')
-        ];
-    }
-
+   
     /**
      * 
      * @OA\Post(path="/api/password/email",

@@ -16,13 +16,6 @@ class VerificationController extends Controller
 {
     use ApiResponseTrait;
 
-    public static function middleware()
-    {
-        return [
-            new Middleware('throttle:6,1')
-        ];
-    }
-
     /**
      * @OA\Get(path="/api/email/verify/{user}",
      *   tags={"Inscription"},

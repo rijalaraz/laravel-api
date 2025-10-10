@@ -13,13 +13,6 @@ class ResetPasswordController extends Controller
 {
     use ApiResponseTrait, ResetsPasswords;
 
-    public static function middleware()
-    {
-        return [
-            new Middleware('guest:api')
-        ];
-    }
-
     /**
      * 
      * @OA\Post(path="/api/password/reset",

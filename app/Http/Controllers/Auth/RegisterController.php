@@ -11,8 +11,6 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -23,13 +21,6 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 class RegisterController extends Controller
 {
     use ApiResponseTrait, RegistersUsers;
-
-    public static function middleware()
-    {
-        return [
-            new Middleware('guest:api')
-        ];
-    }
 
     /**
      * Store a newly created user in storage.
@@ -92,7 +83,7 @@ class RegisterController extends Controller
      *     @OA\Response(response="422", description="Validation errors")
      * )
      */
-    public function __invoke(StoreUserRequest $request)
+    public function register(StoreUserRequest $request)
     {
         $request->validated($request->all());
 

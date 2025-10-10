@@ -21,13 +21,6 @@ class LoginController extends Controller
 {
     use ApiResponseTrait, AuthenticatesUsers;
 
-    public static function middleware()
-    {
-        return [
-            new Middleware('guest:api')
-        ];
-    }
-
     /**
      * Handle a login request to the application.
      * 

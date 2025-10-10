@@ -14,11 +14,11 @@ use Illuminate\Support\Facades\Route;
 Route::group([
 
     'namespace' => 'App\Http\Controllers\Auth',
-    'middleware' => 'guest:api'
+    // 'middleware' => 'guest:api'
 
 ], function() {
 
-    Route::post('/register', RegisterController::class);
+    Route::post('/register', [RegisterController::class, 'register']);
     Route::get('email/verify/{user}', [VerificationController::class, 'verify'])->name('verification.verify');
     Route::post('email/resend', [VerificationController::class, 'resend'])->name('verification.resend');
 
