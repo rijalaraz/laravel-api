@@ -14,7 +14,7 @@ class CustomAuthenticate extends Authenticate
     use ApiResponseTrait;
 
     protected $isAuthenticated = false;
-   
+
     /**
      * Handle an incoming request.
      *
@@ -29,7 +29,7 @@ class CustomAuthenticate extends Authenticate
     {
         $this->authenticate($request, $guards);
 
-        if (!$this->isAuthenticated) {
+        if (! $this->isAuthenticated) {
             return $this->errorResponse(trans('auth.unauthenticated'), Response::HTTP_UNAUTHORIZED);
         }
 
