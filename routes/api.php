@@ -33,7 +33,7 @@ Route::group([
 // Privé
 Route::group([
 
-    'middleware' => 'auth:api',
+    'middleware' => 'my-auth:api',
 
 ], function($router) {
 
