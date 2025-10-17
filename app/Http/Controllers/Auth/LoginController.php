@@ -179,10 +179,10 @@ class LoginController extends Controller
 
             $user = $this->guard()->user();
             if ($user instanceof MustVerifyEmail && ! $user->hasVerifiedEmail()) {
-                return $this->errorResponse(trans('verification.mustverify', [
+                return $this->unauthorizedResponse(trans('verification.mustverify', [
                     'linkOpen' => '<a href="/email/resend?email='.urlencode($user->email).'">',
                     'linkClose' => '</a>',
-                ]), Response::HTTP_UNAUTHORIZED);
+                ]));
             }
 
             return $this->sendLoginResponse($request);

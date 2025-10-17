@@ -30,7 +30,7 @@ class CustomAuthenticate extends Authenticate
         $this->authenticate($request, $guards);
 
         if (! $this->isAuthenticated) {
-            return $this->errorResponse(trans('auth.unauthenticated'), Response::HTTP_UNAUTHORIZED);
+            return $this->unauthorizedResponse(trans('auth.unauthenticated'));
         }
 
         return $next($request);
