@@ -162,7 +162,7 @@ class ProjectController extends Controller
             'image' => $path
         ]);
 
-        return $this->successResponse($project, 'Projet créé avec succès');
+        return $this->successResponse(new ProjectResource($project), 'Projet créé avec succès');
     }
 
 
@@ -218,7 +218,7 @@ class ProjectController extends Controller
 
         $project->update($request->all());
 
-        return $this->successResponse($project, 'Projet modifié avec succès');
+        return $this->successResponse(new ProjectResource($project), 'Projet modifié avec succès');
     }
 
     /**
@@ -236,10 +236,7 @@ class ProjectController extends Controller
 
         $project->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Projet supprimé avec succès'
-        ]);
+        return $this->successResponse([], 'Projet supprimé avec succès');
     }
 
     public function search(Request $request)
