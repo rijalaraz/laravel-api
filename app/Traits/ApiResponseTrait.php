@@ -7,7 +7,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 trait ApiResponseTrait
 {
-    protected function successResponse($data, $message = null, $code = Response::HTTP_OK)
+    protected function successResponse($data, $message = null, $code = Response::HTTP_CREATED)
     {
         return response()->json([
             'success' => true,
